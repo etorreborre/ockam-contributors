@@ -69,7 +69,7 @@ jobs:
             For this to work the commit with commit hash: ${FIRST_COMMIT} should be an ancestor of HEAD
             but it seems this is not the case with the current HEAD.
 
-            Try rebasing to the develop branch of ockam.
+            Try rebasing to the develop branch of ockam-contributors
             https://github.com/build-trust/ockam-contributors/tree/develop
           " && exit 1)
 
@@ -88,7 +88,7 @@ jobs:
         env:
           PR_SENDER: ${{ github.event.pull_request.user.login }}
         run: |
-          unverified=$(cat commits.json | jq --raw-output '.[] | [.sha, .commit.verification.verified] | @csv' | grep false || echo '')
+          unverified=$(cat commits.json | jq --raw-output '.[] | select(.commit.verification.verified == false) | .sha')
 
           if [ -z "$unverified" ]; then
             echo '[✓] All commits in this pull request are Verified by Github.'
